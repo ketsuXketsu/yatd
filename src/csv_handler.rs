@@ -6,7 +6,7 @@ use std::{
     path::Path,
 };
 
-use crate::td::{self, record_to_todo, Todo};
+use crate::todo::{self, Todo};
 
 // Should only be used by the create_file_if_not_exists function,
 // it checks if the td.csv file exists, and if it doesnt,
@@ -60,14 +60,14 @@ pub fn create_file_if_not_exists(file: &str) {
 
 // Reads the contents of td.csv and
 // sends them to be turned into a Todo struct
-pub fn read_file_and_return_todos(file_path: &str) -> Result<Vec<td::Todo>, Box<dyn Error>> {
+pub fn read_file_and_return_todos(file_path: &str) -> Result<Vec<todo::Todo>, Box<dyn Error>> {
     let mut rdr = csv::Reader::from_path(file_path)?;
-    let mut return_values: Vec<td::Todo> = Vec::new();
+    let mut return_values: Vec<todo::Todo> = Vec::new();
 
     for result in rdr.records() {
         let record = result?;
         let rec = record.deserialize::<Vec<String>>(None).unwrap();
-        return_values.push(td::record_to_todo(rec));
+        return_values.push(todo::record_to_todo(rec));
     }
     Ok(return_values)
 }

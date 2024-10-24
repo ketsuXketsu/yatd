@@ -1,6 +1,8 @@
 use core::{fmt, panic, str};
 use serde::{de::Error, Deserialize, Serialize};
 
+use crate::terminal::{self, Terminal};
+
 #[allow(unused)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Todo {
@@ -41,7 +43,11 @@ impl Todo {
         }
     }
 
-    pub fn pretty_print(&self) {
+    pub fn pretty_print(&self, clear: bool) {
+        if clear == true {
+            Terminal::clear();
+        }
+
         println!(
             "id: {}\ntitle: {}\ncontent: {}\nsituation: {}\ncreation_date: {}\ncompletion_date: {}",
             self.id,
