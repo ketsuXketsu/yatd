@@ -1,5 +1,6 @@
 use core::{fmt, panic, str};
 use serde::{de::Error, Deserialize, Serialize};
+use std::time::SystemTime;
 
 use crate::terminal::{self, Terminal};
 
@@ -10,8 +11,8 @@ pub struct Todo {
     pub title: String,
     pub content: String,
     pub situation: Situation,
-    pub creation_date: Date,
-    pub completion_date: Date,
+    pub creation_date: String,
+    pub completion_date: String,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -43,6 +44,17 @@ impl Todo {
         }
     }
 
+    pub fn update_date(&self) -> String {
+        let sys_date = chrono::Local::now();
+        let formatted = format!("{}", sys_date.format("%d-%m-%Y | %H:%M"));
+
+        formatted
+    }
+
+    pub fn change_date(&mut self, date: &str) {
+        self.creation_date = date.to_string();
+    }
+
     pub fn pretty_print(&self, clear: bool) {
         if clear == true {
             Terminal::clear();
@@ -54,8 +66,8 @@ impl Todo {
             self.title,
             self.content,
             self.situation,
-            self.creation_date.get_formatted(),
-            self.completion_date.get_formatted()
+            self.creation_date,
+            self.completion_date,
         );
     }
 }
@@ -86,20 +98,8 @@ pub fn new_todo() -> Todo {
         title: "debug_title".to_string(),
         content: "debug_content".to_string(),
         situation: Situation::Unfinished,
-        creation_date: Date {
-            day: 0,
-            month: 0,
-            year: 0,
-            minute: 0,
-            hour: 0,
-        },
-        completion_date: Date {
-            day: 0,
-            month: 0,
-            year: 0,
-            minute: 0,
-            hour: 0,
-        },
+        creation_date: "".to_string(),
+        completion_date: "".to_string(),
     }
 }
 
@@ -111,6 +111,7 @@ pub fn record_to_todo(record: Vec<String>) -> Todo {
             1 => new_todo.change_title(&record[i]),
             2 => new_todo.change_content(&record[i]),
             3 => new_todo.change_situation(&record[i]),
+            4 => new_todo.change_date(&record[i]),
             _ => {}
         }
     }

@@ -85,8 +85,8 @@ pub fn save_todo_to_file(file: &str, value_list: Vec<u8>) -> Result<(), Box<dyn 
         decoded.title,
         decoded.content,
         decoded.situation.to_string(),
-        decoded.creation_date.get_formatted(),
-        decoded.completion_date.get_formatted(),
+        decoded.creation_date,
+        decoded.completion_date,
     ];
 
     wrtr.write_record(value_list)?;

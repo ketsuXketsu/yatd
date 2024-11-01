@@ -4,7 +4,7 @@ mod terminal;
 mod todo;
 use core::panic;
 use terminal::Terminal;
-use todo::Situation;
+use todo::{new_todo, Situation};
 
 fn main() {
     let tdops = TdOps {
@@ -98,7 +98,7 @@ impl TdOps {
                     Err(e) => println!("{}", e),
                     Ok(input) => {
                         new_todo.change_content(input);
-
+                        new_todo.creation_date = new_todo.update_date();
                         let encoded: Vec<u8> = bincode::serialize(&new_todo).unwrap();
                         csv_handler::save_todo_to_file(&self.file, encoded).unwrap();
                     }
@@ -185,6 +185,7 @@ impl TdOps {
             }
         }
     }
+
     fn pretty_print_list(&self, todo_list: &[todo::Todo]) {
         for todo in todo_list {
             todo.pretty_print(false);
